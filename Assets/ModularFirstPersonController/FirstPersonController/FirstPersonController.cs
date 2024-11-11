@@ -8,6 +8,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
+
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -21,6 +23,8 @@ public class FirstPersonController : MonoBehaviour
   #region Camera Movement Variables
 
   public Camera playerCamera;
+
+  private bool hasKey = false;
 
   public float fov = 60f;
   public bool invertCamera = false;
@@ -100,7 +104,6 @@ public class FirstPersonController : MonoBehaviour
 
   // Internal Variables
   private bool isGrounded = false;
-  private bool hasKey = false;
 
   #endregion
 
@@ -152,6 +155,7 @@ public class FirstPersonController : MonoBehaviour
 
   void Start()
   {
+
     if (lockCursor)
     {
       Cursor.lockState = CursorLockMode.Locked;
@@ -527,25 +531,22 @@ public class FirstPersonController : MonoBehaviour
       joint.localPosition = new Vector3(Mathf.Lerp(joint.localPosition.x, jointOriginalPos.x, Time.deltaTime * bobSpeed), Mathf.Lerp(joint.localPosition.y, jointOriginalPos.y, Time.deltaTime * bobSpeed), Mathf.Lerp(joint.localPosition.z, jointOriginalPos.z, Time.deltaTime * bobSpeed));
     }
   }
-
   private void OnTriggerEnter(Collider collision)
   {
     if (collision.CompareTag("Key"))
     {
       hasKey = true;
-      Debug.Log("Key acquired.");
       Destroy(collision.gameObject);
     }
     if (collision.CompareTag("Door") && hasKey)
     {
-      Debug.Log("Next level.");
       if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "LevelOne")
       {
         UnityEngine.SceneManagement.SceneManager.LoadScene("LevelTwo");
       }
       else if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "LevelTwo")
       {
-        Debug.Log("You win!");
+        UnityEngine.SceneManagement.SceneManager.LoadScene("WinScreen");
       }
     }
   }
